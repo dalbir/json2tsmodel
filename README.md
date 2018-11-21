@@ -3,7 +3,7 @@
 [![Travis](https://img.shields.io/travis/ddramone/json2model.svg)](https://travis-ci.org/ddramone/json2model)
 [![Coveralls](https://img.shields.io/coveralls/ddramone/json2model.svg)](https://coveralls.io/github/ddramone/json2model)
 
-The easiest and cleanest way to cast json to data models and wise versa using decorators.
+The easiest and cleanest way to cast json to data models using typescript decorators.
 
 ### Sneak peek:
 
