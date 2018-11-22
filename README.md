@@ -65,7 +65,8 @@ const instance = new MyModel()
 Idea of using @Cast decorator it is to map expected json structure to model properties.
 
 Followig example defines `id` property that conforms `uuid` from  JSON.
-```
+
+```ts
 class User extends BaseModel {
  @Cast('uuid') id: string;
 }
