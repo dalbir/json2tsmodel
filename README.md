@@ -146,7 +146,7 @@ class Author extends BaseModel {
     ＠Cast() books: Book[];
  }
  
- const author = new Author({
+ const author = new Author().cast({
     name: 'Philip K. Dick'
     books: [
         { isbn: '9780345404473' }
