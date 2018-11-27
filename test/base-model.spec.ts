@@ -1,109 +1,102 @@
-// import { BaseModel, Cast, ReadOnly, HasOne, HasMany, PK } from './index';
+import { BaseModel, Cast, ReadOnly, HasOne, HasMany } from '../src/json2model'
 
-// class Human extends BaseModel {
+class Human extends BaseModel {
+  @ReadOnly
+  @Cast()
+  public id: Number
 
-//     @ReadOnly
-//     @PK @Cast() public id;
+  @Cast('n') public name: string
+  @Cast(v => +v)
+  public age: number
 
-//     @Cast('n') public name: string;
-//     @Cast(v => +v)
-//     public age: number;
+  @ReadOnly
+  @Cast('age', v => +v >= 18)
+  public adult: boolean
 
-//     @ReadOnly
-//     @Cast('age', (v) => +v >= 18 )
-//     public adult: boolean;
+  @HasMany(Human) @Cast() public children: Human[]
+  @HasOne(Human) @Cast() public wife: Human
+}
 
+class Empty extends BaseModel {}
 
-//     @HasMany(Human) @Cast() public children: Human[];
-//     @HasOne(Human) @Cast() public wife: Human;
+const json = {
+  id: '01',
+  n: 'Name',
+  age: '20',
+  wife: {
+    n: 'W'
+  },
+  children: [
+    {
+      id: 'c1',
+      n: 'Child 1',
+      age: 10
+    },
+    {
+      id: 'c2',
+      n: 'Child 2'
+    }
+  ]
+}
 
-// }
+describe('Model Factory', () => {
+  let human: Human
 
-// class Empty extends BaseModel { }
+  beforeAll(() => {
+    human = new Human()
+  })
 
-// const json = {
-//     id: '01',
-//     n: 'Name',
-//     age: '20',
-//     wife: {
-//         n: 'W'
-//     },
-//     children: [{
-//         id: 'c1',
-//         n: 'Child 1',
-//         age: 10
-//     },         {
-//         id: 'c2',
-//         n: 'Child 2'
-//     }]
-// };
+  it('should have correct functions exposed', () => {
+    expect(human.cast).toBeDefined()
+    expect(human.toJson).toBeDefined()
+  })
 
-// describe('Model Factory',  () => {
+  it('should not brake if no properties specified', () => {
+    const empty = new Empty()
+    const res = empty.cast({})
+    empty.toJson()
+    expect(res).toEqual(empty)
+  })
 
-//     let human: Human;
+  describe('cast method', () => {
+    beforeAll(() => {
+      human.cast(json)
+    })
 
-//     beforeAll(() => {
-//         human = new Human();
-//     });
+    it('should cast json to data model correctly', () => {
+      expect(human.id).toBe('01')
+      expect(human.name).toBe('Name')
+      expect(human.age).toBe(20)
+    })
 
-//     it('should have correct functions exposed', () => {
-//         expect(human.cast).toBeFunction();
-//         expect(human.toJson).toBeFunction();
-//     });
+    it('should use convert function correctly', () => {
+      expect(human.adult).toBeTruthy()
+    })
 
-//     it('should not brake if no properties specified', () => {
-//         const empty = new Empty();
-//         const res = empty.cast({}); empty.toJson();
-//         expect(res).toEqual(empty);
-//     });
+    it('should define relations correctly', () => {
+      expect(human.wife).toBeDefined()
+      expect(human.wife.name).toBe('W')
+      expect(human.children.length).toBe(2)
+    })
 
-//     describe('cast method', () => {
+    describe('toJson method', () => {
+      let resultJson: any
 
-//         beforeAll(() => {
-//             human.cast(json);
-//         });
+      beforeAll(() => {
+        resultJson = human.toJson()
+      })
 
-//         it('should return primary key properly', () => {
-//             expect(human.getPK()).toBe('01');
-//         });
+      it('should expose correct data', () => {
+        expect(resultJson.n).toBe('Name')
+      })
 
-//         it('should cast json to data model correctly', () => {
-//             expect(human.id).toBe('01');
-//             expect(human.name).toBe('Name');
-//             expect(human.age).toBe(20);
-//         });
+      it('should skip readonly properties', () => {
+        expect(resultJson.id).toBeUndefined()
+      })
 
-//         it('should use convert function correctly', () => {
-//             expect(human.adult).toBeTrue();
-//         });
-
-//         it('should define relations correctly', () => {
-//             expect(human.wife).toBeDefined();
-//             expect(human.wife.name).toBe('W');
-//             expect(human.children.length).toBe(2);
-//         });
-
-//         describe('toJson method', () => {
-
-//             let resultJson;
-//             beforeAll(() => {
-//                 resultJson = human.toJson();
-//             });
-
-//             it('should expose correct data', () => {
-//                 expect(resultJson.n).toBe('Name');
-//             });
-
-//             it('should skip readonly properties', () => {
-//                 expect(resultJson.id).toBeUndefined();
-//             });
-
-//             it('should skip undefined properties', () => {
-//                 expect(resultJson.children[1].age).toBeUndefined();
-//             });
-
-//         });
-//     });
-
-
-// });
+      it('should skip undefined properties', () => {
+        expect(resultJson.children[1].age).toBeUndefined()
+      })
+    })
+  })
+})
