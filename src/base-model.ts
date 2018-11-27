@@ -1,109 +1,108 @@
-import 'reflect-metadata';
-import { CastConfig } from './decorators/cast';
-import { IRelationInfo } from './decorators/relations';
-import { KEYS, RELATION } from './constants';
+import 'reflect-metadata'
+import { CastConfig } from './decorators/cast'
+import { IRelationInfo } from './decorators/relations'
+import { KEYS, RELATION } from './constants'
 
 export class BaseModel {
+  /**
+   * reference to the orginal api data
+   */
+  protected _raw: any = {}
 
-    /**
-     * reference to the orginal api data
-     */
-    protected _raw: any = {};
+  /**
+   * Triggered when the changed function is called instructing subscribers that item is updated
+   */
 
-    /**
-     * Triggered when the changed function is called instructing subscribers that item is updated
-     */
+  /**
+   * Parse JSON data to Model Class
+   * Based on @Cast decorator
+   *
+   * @param json JSON Data
+   */
+  public cast(json: any) {
+    const self = (this as unknown) as BaseModel & { [key: string]: string }
 
-    /**
-     * Parse JSON data to Model Class
-     * Based on @Cast decorator
-     *
-     * @param json JSON Data
-     */
-    public cast(json: any) {
+    const properties: { [key: string]: CastConfig } = Reflect.getMetadata(KEYS.CONFIG, this) || {}
 
-        const self = (this as unknown) as BaseModel & { [key: string]: string };
+    this._raw = json
 
-        const properties: { [key:string]: CastConfig } = Reflect.getMetadata(KEYS.CONFIG, this) || {};
+    for (const propertyKey in properties) {
+      const castConfig: CastConfig = properties[propertyKey]
 
-        this._raw = json;
+      if (!castConfig.from) {
+        continue
+      }
 
-        for (const propertyKey in properties) {
-            const castConfig: CastConfig = properties[propertyKey];
+      let castValue = json[castConfig.from]
 
-            if(!castConfig.from) { continue };
+      const relationInfo = Reflect.getMetadata(KEYS.RELATIONS, this, propertyKey)
+      if (relationInfo) {
+        castValue = this.setupRelations(relationInfo, castValue)
+      }
 
-            let castValue = json[castConfig.from];
-
-            const relationInfo = Reflect.getMetadata(KEYS.RELATIONS, this, propertyKey);
-            if (relationInfo) {
-                castValue = this.setupRelations(relationInfo, castValue);
-            }
-
-            if (castConfig.convert && castValue !== undefined) {
-                castValue = castConfig.convert.apply(this, [castValue, this._raw]);
-            }
-            if (castValue !== undefined) {
-              self[propertyKey] = castValue;
-            }
-        }
-
-        return this;
+      if (castConfig.convert && castValue !== undefined) {
+        castValue = castConfig.convert.apply(this, [castValue, this._raw])
+      }
+      if (castValue !== undefined) {
+        self[propertyKey] = castValue
+      }
     }
 
+    return this
+  }
 
-    /**
-     *
-     */
-    public toJson(): Object {
+  /**
+   *
+   */
+  public toJson(): Object {
+    const self = (this as unknown) as BaseModel & { [key: string]: any }
+    const resultJson: { [key: string]: any } = {}
+    const properties: { [key: string]: CastConfig } = Reflect.getMetadata(KEYS.CONFIG, this) || {}
 
-        const self = (this as unknown) as BaseModel & { [key: string]: any };
-        const resultJson: { [key:string]: any } = {};
-        const properties: { [key:string]: CastConfig } = Reflect.getMetadata(KEYS.CONFIG, this) || {};
+    for (const key in properties) {
+      let propertyValue = self[key]
 
-        for (const key in properties) {
-            let propertyValue = self[key];
+      const info = properties[key]
 
-            const info = properties[key];
+      if (!info.from || typeof propertyValue === 'undefined' || info.readOnly) {
+        continue
+      }
 
-            if(!info.from
-              || typeof propertyValue === 'undefined'
-              || info.readOnly) { continue; }
-
-            const relationInfo = Reflect.getMetadata('casting:relations', this, key);
-            if (relationInfo) {
-                switch (relationInfo.type) {
-                    case 'hasOne':
-                        propertyValue = self[key].toJson();
-                    break;
-                    case 'hasMany':
-                        propertyValue = propertyValue.map((v: BaseModel) => v.toJson());
-                    break;
-                }
-            }
-            resultJson[info.from] = propertyValue;
+      const relationInfo = Reflect.getMetadata('json2model:casting:relations', this, key)
+      if (relationInfo) {
+        switch (relationInfo.type) {
+          case RELATION.HASONE:
+            propertyValue = self[key].toJson()
+            break
+          case RELATION.HASMANY:
+            propertyValue = propertyValue.map((v: BaseModel) => v.toJson())
+            break
         }
-
-        return resultJson;
-
+      }
+      resultJson[info.from] = propertyValue
     }
 
-    private setupRelations(relationInfo: IRelationInfo, json: any): any | undefined {
+    return resultJson
+  }
 
-        if  (!json) { { return undefined; } }
-
-        switch  (relationInfo.type) {
-            case RELATION.HASONE:
-              return new (relationInfo.model as any)().cast(json);
-            case RELATION.HASMANY:
-              const items = [];
-              for (const key in json) {
-                  if (json.hasOwnProperty(key)) {
-                      items.push(new (relationInfo.model as any)().cast(json[key]));
-                  }
-              }
-            return items;
-        }
-
+  private setupRelations(relationInfo: IRelationInfo, json: any): any | undefined {
+    if (!json) {
+      {
+        return undefined
+      }
     }
+
+    switch (relationInfo.type) {
+      case RELATION.HASONE:
+        return new (relationInfo.model as any)().cast(json)
+      case RELATION.HASMANY:
+        const items = []
+        for (const key in json) {
+          if (json.hasOwnProperty(key)) {
+            items.push(new (relationInfo.model as any)().cast(json[key]))
+          }
+        }
+        return items
+    }
+  }
 }
