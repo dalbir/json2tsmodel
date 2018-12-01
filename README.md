@@ -1,4 +1,4 @@
-# JSON to Data Models
+# JSON to Typescript Data Models
 
 [![Travis](https://img.shields.io/travis/ddramone/json2tsmodel.svg)](https://travis-ci.org/ddramone/json2tsmodel)
 [![Coveralls](https://img.shields.io/coveralls/ddramone/json2tsmodel.svg)](https://coveralls.io/github/ddramone/json2tsmodel)
