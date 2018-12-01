@@ -1,18 +1,18 @@
 {
-  "name": "tsjson",
+  "name": "json2tsmodel",
   "version": "0.0.0-development",
   "description": "",
   "keywords": [],
-  "main": "dist/tsjson.umd.js",
-  "module": "dist/tsjson.es5.js",
-  "typings": "dist/types/tsjson.d.ts",
+  "main": "dist/json2tsmodel.umd.js",
+  "module": "dist/json2tsmodel.es5.js",
+  "typings": "dist/types/json2tsmodel.d.ts",
   "files": [
     "dist"
   ],
-  "author": "Ika Pkhakadze  i.pkhakadze+jsontomodel@gmail.com",
+  "author": "Ika Pkhakadze  i.pkhakadze+json2tsmodel@gmail.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ddramone/tsjson"
+    "url": "https://github.com/ddramone/json2tsmodel"
   },
   "license": "MIT",
   "engines": {

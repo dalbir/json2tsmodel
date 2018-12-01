@@ -1,6 +1,6 @@
 export enum KEYS {
-  CONFIG = 'tsjson:casting:config',
-  RELATIONS = 'tsjson:casting:relations'
+  CONFIG = 'json2tsmodel:casting:config',
+  RELATIONS = 'json2tsmodel:casting:relations'
 }
 
 export enum RELATION {
