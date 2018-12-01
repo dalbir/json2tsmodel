@@ -23,7 +23,7 @@ touch(".nojekyll")
 exec("git init")
 exec("git add .")
 exec('git config user.name "Ika Pkhakadze"')
-exec('git config user.email "irakli.pkhakadze@philips.com"')
+exec('git config user.email "i.pkhakadze@gmail.com"')
 exec('git commit -m "docs(docs): update gh-pages"')
 exec(
   `git push --force --quiet "https://${ghToken}@${repository}" master:gh-pages`

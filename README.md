@@ -1,7 +1,9 @@
-# JSON to Data Models
+# JSON to Typescript Data Models
 
-[![Travis](https://img.shields.io/travis/ddramone/json2model.svg)](https://travis-ci.org/ddramone/json2model)
-[![Coveralls](https://img.shields.io/coveralls/ddramone/json2model.svg)](https://coveralls.io/github/ddramone/json2model)
+[![npm version](https://badge.fury.io/js/json2tsmodel.svg)](https://badge.fury.io/js/json2tsmodel)
+[![Travis](https://img.shields.io/travis/ddramone/json2tsmodel.svg)](https://travis-ci.org/ddramone/json2tsmodel)
+[![Coveralls](https://img.shields.io/coveralls/ddramone/json2tsmodel.svg)](https://coveralls.io/github/ddramone/json2tsmodel)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 The easiest and cleanest way to cast json to data models using typescript decorators.
 
@@ -44,14 +46,14 @@ myself.isAdult // true
 
 ### Install
 
-`npm i json2model`
+`npm i json2tsmodel`
 
 ### Define Model
 
 The very first step to use library is to define model by extending it from the `BaseModel`.
 
 ```ts
-import { BaseModel } from 'json2model';
+import { BaseModel } from 'json2tsmodel';
 
 class MyModel extends BaseModel {
 }
