@@ -12,7 +12,7 @@
   "author": "Ika Pkhakadze  i.pkhakadze+jsontomodel@gmail.com",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/ddramone/tsjson"
   },
   "license": "MIT",
   "engines": {
