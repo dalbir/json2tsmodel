@@ -1,4 +1,4 @@
-import { BaseModel, Cast, ReadOnly, HasOne, HasMany } from '../src/json2model'
+import { BaseModel, Cast, ReadOnly, HasOne, HasMany } from '../src/tsjson'
 
 class Human extends BaseModel {
   @ReadOnly

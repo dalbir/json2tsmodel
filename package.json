@@ -1,11 +1,11 @@
 {
-  "name": "json2model",
+  "name": "tsjson",
   "version": "0.0.0",
   "description": "",
   "keywords": [],
-  "main": "dist/json2model.umd.js",
-  "module": "dist/json2model.es5.js",
-  "typings": "dist/types/json2model.d.ts",
+  "main": "dist/tsjson.umd.js",
+  "module": "dist/tsjson.es5.js",
+  "typings": "dist/types/tsjson.d.ts",
   "files": [
     "dist"
   ],

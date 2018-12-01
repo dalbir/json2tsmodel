@@ -68,7 +68,7 @@ export class BaseModel {
         continue
       }
 
-      const relationInfo = Reflect.getMetadata('json2model:casting:relations', this, key)
+      const relationInfo = Reflect.getMetadata('tsjson:casting:relations', this, key)
       if (relationInfo) {
         switch (relationInfo.type) {
           case RELATION.HASONE:
